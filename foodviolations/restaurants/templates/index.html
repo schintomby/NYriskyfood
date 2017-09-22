@@ -1,0 +1,18 @@
+<html>
+	<body>
+	New York State: Food Service Establishment Health Violation Data<br/>
+
+	The # of restaurants in NY state that currently have violations from the last health inspection visit:
+	{{ violations|length }}
+	<br/>
+	<ul>
+		{% for violation in violations %}
+
+		<li>{{ violation.facility.name }} in {{ violation.facility.address }} {{ violation.facility.city }} {{ violation.facility.county }} County<br/>
+			{{ violation.violation_description }}
+		</li>
+		{% endfor %}
+	</ul>
+		
+	</body>
+</html>
