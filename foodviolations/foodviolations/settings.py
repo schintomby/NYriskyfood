@@ -23,9 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'bwd%k+%b9%96uotop9f=1grpk5=95lb#+inau$sy2ut47xd5ev'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('FLAVOR')!='prod'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'eatsafe.chintomby.com',
+    '127.0.0.1',
+]
 
 
 # Application definition
