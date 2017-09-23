@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.core.exceptions import ValidationError
 
-# Create your models here.
 class Facility(models.Model):
 	name = models.CharField(max_length=100)
 	address = models.CharField(max_length=200)

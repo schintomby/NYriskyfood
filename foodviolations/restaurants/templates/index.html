@@ -1,18 +1,94 @@
+{% load staticfiles %}
 <html>
+	<head>
+		<title>NYS Health Code Violations</title>
+		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+		<link rel="stylesheet" href="{% static 'css/healthcodeviolation.css' %}">
+		<script src="{% static 'js/jquery.min.js' %}"></script>
+    	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+    	<link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.min.css' %}">
+	</head>	
 	<body>
-	New York State: Food Service Establishment Health Violation Data<br/>
+	
+		<div class="container">
+			<div class="jumbotron centered">
+        		<h1>Eat Safe New Yorkers</h1>
+        		<p class="lead">a -- know before you go -- dining guide</p>
+        		<div class="fineprint">written by: Sarah Chintomby</div>
+ 			</div>	
+        </div>	 
+      	 
+      	{% if not searchStr %}
+      	<div class="row centered">
+        	<div class="col-sm-1"></div>
+        	<div class="col-sm-3">
+          		<div class="numviolation" ><span class="circle">{{ violations|length }}</span></div>
+          		<div class="featurebox">NY restaurants currently in violation.</div>
+          		<div class="fineprint">- As of 9/20/2017</div>
+       		</div> 
+       		<div class="col-sm-8 story">
+       			<p class="centered">There are some pretty terrifying stories out there about food violations in restaurants. </p>
+       			<h4 class="centered">So how can you be sure your favorite spots are up to code? </h4>
+       			<p>Luckily, health code violations are available to the public through the department of health, and this guide is here to sort through them all. Make sure you don't have your own dining horror story to tell! </p>
+       		</div>
+    	</div>
+     	{% endif %}
+        <div class="row centered"> 
+      		<div class="col-sm-12">
+ 				<form class="navbar-form" action="{% url 'index' %}" method="get" accept-charset="utf-8">
+				    <div class="input-group">
+				        <input type="text" id="searchStr" name="searchStr" class="form-control" size="30" placeholder="Yup... type 'rodent' here" value="{{ searchStr }}">
+				   		<span class="input-group-btn">
+					    	<button class="btn btn-secondary" type="submit">
+					    		<span class="glyphicon glyphicon-search"></span>
+					    	</button>
+					    </span>
+				    </div> 
+				</form>
+			</div>
+			 
+			<div class="col-sm-12">	
+				{% if violations %}
+				    Violations found: {{ violations|length }}
+				{% endif %}
 
-	The # of restaurants in NY state that currently have violations from the last health inspection visit:
-	{{ violations|length }}
-	<br/>
-	<ul>
-		{% for violation in violations %}
+				{% if searchStr and not violations %}
+				    <p>No results found containing "{{ searchStr }}".</p>
+				
+					<br/>
+					<div class="left">
+						<a href="{% url 'index' %}"><i class="fa fa-list" aria-hidden="true"></i> Back to Full List</a>
+					</div>
+				{% endif %}
+				<table class="table table-striped table-bordered">
+					<thead class="thead-inverse">
+						<th>Restaurant</th>
+						<th>Address</th>
+						<th>County</th>
+						<th>Violations</th>
+						<th>Inspector Comments</th>
+					</thead>
+					<tbody>
+					{% if searchStr and not violations %}
+						<tr>
+							<td colspan="5">No results found.</td>
+						</tr>
+					{% endif %}
 
-		<li>{{ violation.facility.name }} in {{ violation.facility.address }} {{ violation.facility.city }} {{ violation.facility.county }} County<br/>
-			{{ violation.violation_description }}
-		</li>
-		{% endfor %}
-	</ul>
-		
+					{% for violation in violations %}
+
+						<tr>
+							<td>{{ violation.facility.name|safe }}</td>
+							<td>{{ violation.facility.address|safe }}, {{ violation.facility.city|safe }}</td>
+							<td>{{ violation.facility.county|safe }}</td>
+							<td>{{ violation.violation_description|safe }}</td>
+							<td>{{ violation.inspection_comments|safe }}</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			 
+		</div> <!-- /container -->	
 	</body>
 </html>
