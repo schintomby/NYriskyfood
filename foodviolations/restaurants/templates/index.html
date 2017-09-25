@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 <html>
 	<head>
 		<title>NYS Health Code Violations</title>
@@ -6,60 +6,66 @@
 		<link rel="stylesheet" href="{% static 'css/healthcodeviolation.css' %}">
 		<script src="{% static 'js/jquery.min.js' %}"></script>
     	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+    	<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     	<link rel="stylesheet" href="{% static 'fonts/font-awesome/css/font-awesome.min.css' %}">
 	</head>	
 	<body>
 	
-		<div class="container">
-			<div class="jumbotron centered">
-        		<h1>Eat Safe New Yorkers</h1>
-        		<p class="lead">a -- know before you go -- dining guide</p>
-        		<div class="fineprint">written by: Sarah Chintomby</div>
- 			</div>	
-        </div>	 
-      	 
-      	{% if not searchStr %}
-      	<div class="row centered">
-        	<div class="col-sm-1"></div>
-        	<div class="col-sm-3">
+		<div class="row">
+			<!-- header section with logo -->	
+			<div class="col-sm-1"></div>
+			<div class="col-sm-3">
+	       		<h1 class="logo">eat safe</h1>
+	       		<h2 class="logo">New Yorkers</h2>
+	       		<p class="tagline">a -- know before you go -- dining guide</p>
+	 		</div>	
+	 		<div class="col-sm-7 story">
+	   			<p >There are some pretty nasty stories out there about food violations in restaurants. </p>
+	   			<h4>So how can you be sure your favorite spots are up to code? </h4>
+	   			<p>Luckily, health code violations are available to the public through the <a href="https://health.data.ny.gov/Health/Food-Service-Establishment-Last-Inspection/cnih-y5dw">NYS Department of Health</a>, and this guide is here to sort through them all. Make sure you don't get sick on your next outing, eat safe! </p>
+	       	</div>
+	       	<div class="col-sm-1"></div>
+	    </div> 
+
+	    <!-- search results section  -->
+	    <div class="row resultbody">
+  			<div class="col-lg-1">
           		<div class="numviolation" ><span class="circle">{{ violations|length }}</span></div>
-          		<div class="featurebox">NY restaurants currently in violation.</div>
-          		<div class="fineprint">- As of 9/20/2017</div>
-       		</div> 
-       		<div class="col-sm-8 story">
-       			<p class="centered">There are some pretty terrifying stories out there about food violations in restaurants. </p>
-       			<h4 class="centered">So how can you be sure your favorite spots are up to code? </h4>
-       			<p>Luckily, health code violations are available to the public through the department of health, and this guide is here to sort through them all. Make sure you don't have your own dining horror story to tell! </p>
-       		</div>
-    	</div>
-     	{% endif %}
-        <div class="row centered"> 
-      		<div class="col-sm-12">
- 				<form class="navbar-form" action="{% url 'index' %}" method="get" accept-charset="utf-8">
+          	</div>
+          	<div class="col-lg-6">
+          		<div class="resultdescriptionbox">
+          		{% if searchStr and violations %}
+          			Results found containing "{{ searchStr }}". <br/>
+          		{% elif searchStr and not violations %}
+				    No results found containing "{{ searchStr }}".<br/>
+				{% endif %}	
+					NY restaurants currently in violation.
+					
+				</div>
+          	</div> 
+       		<div class="col-lg-5">
+       			<form class="navbar-form" action="{% url 'index' %}" method="get" accept-charset="utf-8">
 				    <div class="input-group">
 				        <input type="text" id="searchStr" name="searchStr" class="form-control" size="30" placeholder="Yup... type 'rodent' here" value="{{ searchStr }}">
 				   		<span class="input-group-btn">
 					    	<button class="btn btn-secondary" type="submit">
 					    		<span class="glyphicon glyphicon-search"></span>
 					    	</button>
-					    </span>
+					    </span>		
 				    </div> 
 				</form>
-			</div>
-			 
-			<div class="col-sm-12">	
-				{% if violations %}
-				    Violations found: {{ violations|length }}
-				{% endif %}
-
-				{% if searchStr and not violations %}
-				    <p>No results found containing "{{ searchStr }}".</p>
-				
+       		</div>
+    	</div>
+	     	 
+	    <!-- results table --> 	 
+    	<div class="row resultstable"> 
+      		<div class="col-sm-12">	
+				{% if searchStr %}
 					<br/>
 					<div class="left">
 						<a href="{% url 'index' %}"><i class="fa fa-list" aria-hidden="true"></i> Back to Full List</a>
 					</div>
-				{% endif %}
+				{% endif %}	
 				<table class="table table-striped table-bordered">
 					<thead class="thead-inverse">
 						<th>Restaurant</th>
@@ -76,7 +82,6 @@
 					{% endif %}
 
 					{% for violation in violations %}
-
 						<tr>
 							<td>{{ violation.facility.name|safe }}</td>
 							<td>{{ violation.facility.address|safe }}, {{ violation.facility.city|safe }}</td>
@@ -88,7 +93,12 @@
 					</tbody>
 				</table>
 			</div>
-			 
-		</div> <!-- /container -->	
+		</div>
+			
+
+		<div class="footer">
+			<div class="fineprint">Data current as of 9/20/2017 and available for download on official <a href="https://health.data.ny.gov/Health/Food-Service-Establishment-Last-Inspection/cnih-y5dw">NYS Government Website</a>.</div>
+			<div class="fineprint">Data search provided by Sarah Chintomby.</div>
+		</div> 
 	</body>
 </html>
